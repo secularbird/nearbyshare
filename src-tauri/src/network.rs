@@ -6,6 +6,9 @@ use std::net::{TcpListener, TcpStream};
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter, State};
 
+/// Maximum allowed message size (10 MB)
+const MAX_MESSAGE_SIZE_BYTES: usize = 10 * 1024 * 1024;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum Message {
@@ -197,7 +200,7 @@ fn handle_client(
             }
         }
         _ => {
-            return Err("Expected authentication message".to_string());
+            return Err(format!("Expected authentication message, but received a different message type from {}", peer_addr));
         }
     }
     
@@ -221,7 +224,7 @@ fn handle_authenticated_client(
         }
         
         let msg_len = u32::from_be_bytes(len_buf) as usize;
-        if msg_len > 10 * 1024 * 1024 {
+        if msg_len > MAX_MESSAGE_SIZE_BYTES {
             // Message too large, skip
             continue;
         }

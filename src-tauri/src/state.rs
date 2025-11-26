@@ -3,6 +3,9 @@ use std::sync::RwLock;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+/// Default port for the TCP server
+pub const DEFAULT_SERVER_PORT: u16 = 8765;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Peer {
     pub id: String,
@@ -67,7 +70,7 @@ impl AppState {
             clipboard_sync_enabled: RwLock::new(false),
             transfers: RwLock::new(HashMap::new()),
             server_running: RwLock::new(false),
-            server_port: RwLock::new(8765),
+            server_port: RwLock::new(DEFAULT_SERVER_PORT),
             discovery_running: RwLock::new(false),
         }
     }

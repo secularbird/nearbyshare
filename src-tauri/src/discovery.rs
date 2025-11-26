@@ -150,7 +150,6 @@ pub fn register_service(state: State<'_, Arc<AppState>>) -> Result<(), String> {
             }
         };
         
-        let service_name = format!("{}._nearbyshare._tcp.local.", device_id);
         let host_name = format!("{}.local.", device_name);
         
         let service_info = ServiceInfo::new(
@@ -164,10 +163,11 @@ pub fn register_service(state: State<'_, Arc<AppState>>) -> Result<(), String> {
         
         match service_info {
             Ok(info) => {
+                let fullname = info.get_fullname().to_string();
                 if let Err(e) = mdns.register(info) {
                     log::error!("Failed to register mDNS service: {}", e);
                 } else {
-                    log::info!("Registered mDNS service: {}", service_name);
+                    log::info!("Registered mDNS service: {}", fullname);
                 }
             }
             Err(e) => {
@@ -193,9 +193,13 @@ pub fn unregister_service(state: State<'_, Arc<AppState>>) -> Result<(), String>
             }
         };
         
-        let service_name = format!("{}.{}", device_id, SERVICE_TYPE);
-        if let Err(e) = mdns.unregister(&service_name) {
+        // The fullname format should match what ServiceInfo generates
+        // Format: <instance_name>.<service_type>
+        let fullname = format!("{}.{}", device_id, SERVICE_TYPE);
+        if let Err(e) = mdns.unregister(&fullname) {
             log::error!("Failed to unregister mDNS service: {}", e);
+        } else {
+            log::info!("Unregistered mDNS service: {}", fullname);
         }
     });
     

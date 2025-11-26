@@ -8,7 +8,12 @@ use std::sync::Arc;
 use tauri::State;
 use uuid::Uuid;
 
-const CHUNK_SIZE: usize = 65536; // 64KB chunks
+/// Size of each file transfer chunk (64KB).
+/// This size provides a good balance between:
+/// - Network efficiency (fewer TCP packets)
+/// - Memory usage (reasonable buffer size)
+/// - Progress granularity (frequent progress updates)
+const CHUNK_SIZE: usize = 65536;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TransferProgress {

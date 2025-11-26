@@ -1,5 +1,7 @@
 # NearbyShare
 
+[![CI](https://github.com/secularbird/nearbyshare/actions/workflows/ci.yml/badge.svg)](https://github.com/secularbird/nearbyshare/actions/workflows/ci.yml)
+
 局域网内共享剪切板和数据文件的桌面软件
 
 ## 功能特性
